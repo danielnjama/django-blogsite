@@ -20,5 +20,6 @@ urlpatterns = [
     path('editprofileinfo/<int:pk>', views.userInfoFormView, name='editprofileinfo'),
     path('search', views.search, name='search'),
     path('category/<str:hashtags>', views.categoryview, name='category'),
+    path('register/', views.register, name="register"),
 
 ]

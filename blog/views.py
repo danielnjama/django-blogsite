@@ -12,6 +12,7 @@ from django import forms
 from simple_search import search_filter
 from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.contrib import messages
 
 
 
@@ -334,7 +335,55 @@ def categoryview(request, hashtags):
 
 
 
+def register(request):
+    if request.method == 'POST':
+        first_name = request.POST['first_name']
+        username = request.POST['username']
+        password1 = request.POST['password1']
+        password2 = request.POST['password2']
+        email = request.POST['email']
+       
+
+        if password1 == password2:
+            if User.objects.filter(username=username).exists():
+                messages.info(request, 'Username Taken')
+                return render(request, 'registration/register.html')
+            elif User.objects.filter(email=email).exists():
+                messages.info(request, 'Email Taken')
+                return render(request, 'registration/register.html')
+            else:
+                user = User.objects.create_user(
+                    username=username, password=password1, email=email, first_name=first_name)
+                user_instance = UserInfo(author=user,displayname=username)
+                user_instance.save()
+                user.save()
+                messages.info(request, 'New user successfully created')
+                return redirect('login')
+
+        else:
+            messages.info(request, 'password not matching')
+            return render(request, 'registration/register.html')
+        return redirect('/')
+
+
+    return render(request, "registration/register.html", {})
     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     '''
     
     <link rel="stylesheet" href="https://cdn.metroui.org.ua/v4/css/metro.min.css">
